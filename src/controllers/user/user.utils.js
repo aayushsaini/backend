@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import User from "../../models/user.model.js";
 import { messages } from "../../constants/messages.constant.js";
 import { isValidEmail, isValidLength } from "../../utilities/validation.js";
@@ -47,4 +48,15 @@ export const validateUserData = async (data) => {
 
   dataValidity.response = 200; // 200 is the default response code for valid data/request if everything goes well
   return dataValidity;
+};
+
+/**
+ * Utility method to encrypt the given password using bcrypt
+ * @param {string} password
+ * @returns {string} encryptedPassword
+ * */
+export const encryptPassword = async (password) => {
+  const salt = await bcrypt.genSalt(10);
+  const encryptedPassword = await bcrypt.hash(password, salt);
+  return encryptedPassword;
 };
