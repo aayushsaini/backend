@@ -1,7 +1,6 @@
 import User from "../../models/user.model.js";
 import { messages } from "../../constants/messages.constant.js";
 import { encryptPassword, validateUserData } from "./user.utils.js";
-import bcrypt from "bcrypt";
 
 /**
  * Controller method to register a new user
