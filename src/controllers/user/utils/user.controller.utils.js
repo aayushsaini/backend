@@ -1,7 +1,10 @@
 import bcrypt from "bcrypt";
 import User from "../../../models/user.model.js";
 import { messages } from "../../../constants/messages.constant.js";
-import { isValidEmail, isValidLength } from "../../../utilities/common.validation.js";
+import {
+  isValidEmail,
+  isValidLength,
+} from "../../../utilities/common.validation.js";
 import { Shuffle } from "../constants/user.controller.constants.js";
 
 /**
@@ -136,11 +139,12 @@ export const generateUserName = async (firstName, lastName) => {
               getSpecialChar(true);
         break;
       case Shuffle.Random:
+        const maxAllowedNumber = 200;
         suggestedUsername =
           numberUpto(1) === 0
             ? getSpecialChar(true) +
               lastName.toLowerCase() +
-              numberUpto(200) +
+              numberUpto(maxAllowedNumber) +
               getSpecialChar() +
               firstName.charAt(0).toUpperCase() +
               firstName.slice(1).toLowerCase() +
@@ -150,7 +154,7 @@ export const generateUserName = async (firstName, lastName) => {
               getSpecialChar() +
               lastName.charAt(0).toUpperCase() +
               lastName.slice(1).toLowerCase() +
-              numberUpto(200) +
+              numberUpto(maxAllowedNumber) +
               getSpecialChar(true);
         break;
       default:
