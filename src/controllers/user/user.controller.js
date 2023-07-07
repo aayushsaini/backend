@@ -1,6 +1,10 @@
 import User from "../../models/user.model.js";
 import { messages } from "../../constants/messages.constant.js";
-import { encryptPassword, validateUserData } from "./user.utils.js";
+import {
+  encryptPassword,
+  validateUserData,
+  generateUserName,
+} from "./utils/user.controller.utils.js";
 
 /**
  * Controller method to register a new user
@@ -10,25 +14,25 @@ import { encryptPassword, validateUserData } from "./user.utils.js";
  */
 export const register = async (req, res) => {
   try {
-    const {
+    const { firstName, lastName, email, password, gender, dateOfBirth } =
+      req.body;
+
+    const validity = await validateUserData({
       firstName,
       lastName,
-      userName,
       email,
       password,
-      gender,
-      dateOfBirth,
-    } = req.body;
+    });
+    if (validity.response !== 200)
+      return res.status(validity.response).json({ message: validity.message });
 
-    const validity = await validateUserData({ firstName, lastName, userName, email, password });
-    if (validity.response !== 200) return res.status(validity.response).json({ message: validity.message });
-    
     const encryptedPassword = await encryptPassword(password);
+    const generatedUserName = await generateUserName(firstName, lastName);
 
     const newUser = await new User({
       firstName,
       lastName,
-      userName,
+      userName: generatedUserName,
       email,
       password: encryptedPassword,
       gender,
@@ -39,8 +43,6 @@ export const register = async (req, res) => {
       .json({ message: messages.success.controller.user.registered, newUser });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({ message: messages.error.server.serverError, error });
+    res.status(500).json({ message: messages.error.server.serverError, error });
   }
 };
